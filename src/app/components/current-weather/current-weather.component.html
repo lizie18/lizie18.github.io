@@ -1,0 +1,76 @@
+<div class="container contenedor">
+  <div class="container-lgx">
+    <div class="h-100 d-flex flex-column position-relative">
+      <ng-container *ngIf="currentTime">
+        <app-sun *ngIf="!isNight()"></app-sun>
+      </ng-container>
+
+      <ng-container *ngIf="currentWeather">
+        <app-rain-effect *ngIf="currentWeather.weather[0].main === 'Rain'"></app-rain-effect>
+      </ng-container>
+
+      <div class="pt-3">
+        <ng-select [items]="citiesList" placeholder="Buscar " bindLabel="name" bindValue="id" (change)="changeCity($event)"></ng-select>
+        <div class="d-flex py-5 justify-content-between content-header">
+          <div class="font-lg" *ngIf="currentWeather">{{currentWeather.name}}</div>
+        </div>
+      </div>
+      <div *ngIf="currentWeather" class="d-flex flex-column flex-grow-1 justify-content-center align-content-stretch">
+        <div class="text-center">
+          {{currentWeather.weather[0].description | titlecase}}
+        </div>
+        <div class="text-center font-xl">
+          {{currentWeather.main.temp | number: '1.0-0'}}°
+        </div>
+        <div class="text-center">
+          feels like {{currentWeather.main.feels_like | number: '1.0-0'}}°
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-mdx">
+      <div class="box">
+        <div class="box-title">
+          <span>Humedad</span>
+        </div>
+        <div class="box-body">
+          <ng-container class="flex-grow-1" *ngIf="currentWeather">
+            <circle-progress [percent]="currentWeather.main.humidity" [radius]="100" [outerStrokeWidth]="16"
+              [innerStrokeWidth]="8" [outerStrokeColor]="'#78C000'" [innerStrokeColor]="'#C7E596'" [animation]="true"
+              [animationDuration]="300">
+            </circle-progress>
+          </ng-container>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title pt-5" *ngIf="currentWeather">
+          <span>Viento</span>
+          <div>
+            <span>{{currentWeather.wind.speed}} m/s</span>
+          </div>
+        </div>
+        <div class="box-body">
+          <ng-container *ngIf="currentWeather">
+            <app-wind-turbine></app-wind-turbine>
+          </ng-container>
+        </div>
+      </div>
+      <div class="box box-overflow">
+        <div class="d-flex box-overflow" *ngIf="forecastHourly" style="height: fit-content;">
+          <div class="d-flex flex-column align-items-center m-3" style="width: 100px;" *ngFor="let itemHourly of forecastHourly">
+              <span>{{itemHourly.dt_txt.substr(11,5)}}</span>
+              <img [src]="itemHourly.weather[0].icon | img" alt="" width="50px">
+              <span>{{itemHourly.main.temp | number: '1.0-0'}}</span>
+          </div>
+        </div>
+        <div class="box-overflow-y">
+          <div class="d-flex align-items-center mx-3 justify-content-between" *ngFor="let itemDaily of forecastDaily"
+          style="border-top: .5px solid #487ec1">
+            <span>{{itemDaily.dt_txt.substr(0,10)}}</span>
+            <img [src]="itemDaily.weather[0].icon | img" alt="" width="50px">
+            <span>{{itemDaily.main.temp | number: '1.0-0'}}°</span>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
