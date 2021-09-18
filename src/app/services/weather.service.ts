@@ -1,6 +1,6 @@
+import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { URL_SERVICES, API_KEY } from '../config/config';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -11,12 +11,14 @@ export class WeatherService {
   constructor(private http: HttpClient) {}
 
   getCurrentWeather(units: string = 'metric', city: string = '3936452') {
-    const url = `${URL_SERVICES}/weather?id=${city}&units=${units}&lang=es&appid=${API_KEY}`;
+    const url = `${environment.apiUrl}/weather?id=${city}&units=${units}&lang=es&appid=${environment.apiKey}`;
+    console.log('url', url);
+
     return this.http.get(url);
   }
 
   getForecasHourlytWeather(units: string = 'metric', city: string = '3936452') {
-    const url = `${URL_SERVICES}/forecast?id=${city}&units=${units}&appid=${API_KEY}`;
+    const url = `${environment.apiUrl}/forecast?id=${city}&units=${units}&appid=${environment.apiKey}`;
     return this.http.get(url).pipe(
       map((data: any) => {
         this.forecatsHourly = data.list.filter(
@@ -28,7 +30,7 @@ export class WeatherService {
   }
 
   getForecasDailytWeather(units: string = 'metric', city: string = '3936452') {
-    const url = `${URL_SERVICES}/forecast?id=${city}&units=${units}&appid=${API_KEY}`;
+    const url = `${environment.apiUrl}/forecast?id=${city}&units=${units}&appid=${environment.apiKey}`;
     return this.http.get(url).pipe(
       map((data: any) => {
         this.forecatsHourly = data.list.filter(
